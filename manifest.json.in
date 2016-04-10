@@ -1,0 +1,15 @@
+{
+    "architecture": "@CLICK_ARCH@",
+    "description": "A simple Unity scope that accesses the network",
+    "framework": "ubuntu-sdk-15.04",
+    "hooks": {
+        "scopetemplates": {
+            "apparmor": "scopetemplates.apparmor",
+            "scope": "scopetemplates"
+        }
+    },
+    "maintainer": "XiaoGuo, Liu <xiaoguo.liu@canonical.com>",
+    "name": "scopetemplates.xiaoguo",
+    "title": "scopetemplates",
+    "version": "0.1"
+}
