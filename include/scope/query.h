@@ -34,7 +34,8 @@ private:
     void pushResult(unity::scopes::SearchReplyProxy const& reply,
                     const string renderer, int i);
     void pushResult(const unity::scopes::SearchReplyProxy &reply,
-                    const std::shared_ptr<const unity::scopes::Category> *cat, int i);
+                    const std::shared_ptr<const unity::scopes::Category> *cat, int i,
+                    bool linkquery = false);
 
 private:
     QString scopePath_;

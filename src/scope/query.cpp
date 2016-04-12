@@ -440,7 +440,7 @@ Query::Query(const sc::CannedQuery &query, const sc::SearchMetadata &metadata,
      QString scopePath, Config::Ptr config) :
     sc::SearchQueryBase(query, metadata), scopePath_(scopePath), client_(config) {
 
-    for ( int i = 0; i < 8; i ++ ) {
+    for ( int i = 0; i < 9; i ++ ) {
         QString name = QString("image").append(QString::number(i+1)).append(".jpg");
         QString image = QString("file://%1/images/%2").arg(scopePath).arg(name);
         images_ << image;
@@ -504,6 +504,12 @@ void Query::run(sc::SearchReplyProxy const& reply) {
         for ( int i = 0; i < count; i ++ ) {
             pushResult( reply, &cat, i);
         }
+
+        cat = reply->register_category( "Linking queries", "Linking queries" ,
+                                         "", sc::CategoryRenderer(CAT_RENDERER1) );
+
+        // The link icon's index is 8
+        pushResult( reply, &cat, 8, true);
 
         pushResult(reply, CR_CAROUSEL, 12);
 
@@ -570,14 +576,25 @@ void Query::pushResult(sc::SearchReplyProxy const& reply,
 }
 
 void Query::pushResult(sc::SearchReplyProxy const& reply,
-                       const std::shared_ptr<const Category> *cat, int i) {
+                       const std::shared_ptr<const Category> *cat, int i,
+                       bool linkquery) {
 
     stringstream ss;
     ss << i;
     string str = ss.str();
 
     sc::CategorisedResult r(*cat);
-    r.set_uri( URI.toStdString() );
+
+    // If linkquery is true, we need to redirect it to another scope or
+    // a scope department id locally in this scope
+    if ( linkquery ) {
+        sc::CannedQuery second_query("com.canonical.scopes.news_unity-scope-news");
+        second_query.set_department_id("dept-finance");
+        r.set_uri(second_query.to_uri());
+    } else {
+        r.set_uri( URI.toStdString() );
+    }
+
     r.set_art( images_[i].toStdString() );
     r["subtitle"] = "Subtitle " + str;
     r.set_title("Title " + str);
@@ -589,6 +606,7 @@ void Query::pushResult(sc::SearchReplyProxy const& reply,
     r["comment_icon"] = icons_[3].toStdString();
     r["share_icon"] = icons_[4].toStdString();
     r["share_pic"] = icons_[5].toStdString();
+    r["linkquery"] = linkquery;
 
     QString likes = QString("%1 %2").arg(qstr(u8"\u261d "), "100");
     QString views = QString("%1 %2").arg(qstr(u8"   \u261f "), "99");
