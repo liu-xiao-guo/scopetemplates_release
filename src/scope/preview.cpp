@@ -26,7 +26,7 @@ void Preview::run(sc::PreviewReplyProxy const& reply) {
     Result result = PreviewQueryBase::result();
 
     ColumnLayout layout1col(1);
-    std::vector<std::string> ids = { "image", "header", "summary", "tracks",
+    std::vector<std::string> ids = { "image", "header", "actionsId", "summary", "tracks",
                                     "videos", "gallery_header", "gallerys", "reviews", "exp",
                                      "review_input", "rating_input", "inputId", "img" };
 //    std::vector<std::string> ids = { "inputId", "img" };
@@ -41,6 +41,19 @@ void Preview::run(sc::PreviewReplyProxy const& reply) {
     layout3col.add_column(ids);
     layout3col.add_column({});
     layout3col.add_column({});
+
+    QString urlString(result["uri"].get_string().c_str());
+
+    // Create an Open button and provide the URI to open for this preview result
+    PreviewWidget w_actions("actionsId", "actions");
+    VariantBuilder builder1;
+    builder1.add_tuple({
+            {"id", Variant("open")},
+            {"label", Variant("Open")},
+            {"uri", Variant(urlString.toStdString())} // uri set, this action will be handled by the Dash
+        });
+    w_actions.add_attribute_value("actions", builder1.end());
+    widgets.emplace_back(w_actions);
 
     // Define the header section
     sc::PreviewWidget header("header", "header");
