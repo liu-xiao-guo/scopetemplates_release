@@ -2,11 +2,11 @@ project(scopetemplates CXX)
 cmake_minimum_required(VERSION 2.8.10)
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" "${CMAKE_MODULE_PATH}")
 
-# We require g++ 4.9, to avoid ABI breakage with earlier version.
+# We require at least g++ 4.9, to avoid ABI breakage with earlier versions.
 set(cxx_version_required 4.9)
-if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-    if (NOT CMAKE_CXX_COMPILER_VERSION MATCHES "^${cxx_version_required}")
-        message(FATAL_ERROR "g++ version must be ${cxx_version_required}!")
+if (CMAKE_COMPILER_IS_GNUCXX)
+    if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS ${cxx_version_required})
+        message(FATAL_ERROR "g++ version must be at least ${cxx_version_required}!")
     endif()
 endif()
 

@@ -2,6 +2,7 @@
 
 #include <scope/localization.h>
 #include <scope/query.h>
+#include <iostream>
 
 #include <unity/scopes/Annotation.h>
 #include <unity/scopes/CategorisedResult.h>
